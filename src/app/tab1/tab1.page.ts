@@ -1,5 +1,7 @@
+import { ModalComponent } from './../common/modal/modal.component';
 import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-tab1',
@@ -9,7 +11,8 @@ import { AlertController } from '@ionic/angular';
 export class Tab1Page {
 
   constructor(
-    private alertController: AlertController
+    private alertController: AlertController,
+    public modalController: ModalController
   ) {}
 
   async fireAlert() {
@@ -158,5 +161,17 @@ export class Tab1Page {
     });
 
     await alert.present();
+  }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: ModalComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        firstName: 'Tyler',
+        lastName: 'Greason'
+      }
+    });
+    return await modal.present();
   }
 }
