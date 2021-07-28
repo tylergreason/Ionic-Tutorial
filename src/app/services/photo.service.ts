@@ -10,6 +10,7 @@ import { Platform } from '@ionic/angular';
 })
 export class PhotoService {
   public photos: Iphoto[] = [];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private PHOTO_STORAGE = 'photos';
   private platform: Platform;
 
@@ -63,6 +64,24 @@ export class PhotoService {
       }
     }
   }
+  public async deletePicture(photo: Iphoto, position: number) {
+    // Remove this photo from the Photos reference data array
+    this.photos.splice(position, 1);
+
+    // Update photos array cache by overwriting the existing photo array
+    Storage.set({
+      key: this.PHOTO_STORAGE,
+      value: JSON.stringify(this.photos)
+    });
+
+    // delete photo file from filesystem
+    const filename = photo.filepath.substr(photo.filepath.lastIndexOf('/') + 1);
+
+    await Filesystem.deleteFile({
+      path: filename,
+      directory: Directory.Data
+    });
+  }
 
   private async takePicture(cameraPhoto: Photo) {
 
@@ -104,6 +123,7 @@ export class PhotoService {
       return await this.convertBlobToBase64(blob) as string;
     }
   }
+
 }
 
 export interface Iphoto {
